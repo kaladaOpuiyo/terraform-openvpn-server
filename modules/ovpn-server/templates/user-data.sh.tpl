@@ -1,4 +1,5 @@
 #!/bin/bash
+#Ref:https://dev.to/aws/amazon-route-53-how-to-automatically-update-ip-addresses-without-using-elastic-ips-h7o
 # Extract information about the Instance
 MY_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4/)
 

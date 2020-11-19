@@ -28,7 +28,7 @@ data "aws_iam_policy_document" "associate_ec2_policy_doc" {
   statement {
     effect    = "Allow"
     actions   = ["route53:ChangeResourceRecordSets"]
-    resources = ["arn:aws:route53:::hostedzone/${var.vpn_host_zone_id}"]
+    resources = [format("arn:aws:route53:::hostedzone/%s", var.vpn_host_zone_id)]
   }
 }
 
