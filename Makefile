@@ -6,7 +6,7 @@
 OPENVPN_INSTALL_SCRIPT="https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh"
 OPENVPN_UPDATE_USER_SCRIPT="https://raw.githubusercontent.com/dumrauf/openvpn-terraform-install/master/scripts/update_users.sh"
 
-BASE_AMI=ami-07a0da1997b55b23e
+BASE_AMI=
 CLIENTS="laptop firestick iphone ipad"
 DESTROY_OLD_AMI=true
 DOMAIN_ENDPOINT=$(DOMAIN)
