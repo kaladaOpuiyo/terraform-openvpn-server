@@ -1,0 +1,6 @@
+key_name                = "admin"
+profile_name            = "default"
+sg_resource_description = "OpenVPN is a vpn server"
+volume_size             = 8
+volume_type             = "io2"
+vpc_name                = "default"

@@ -1,0 +1,57 @@
+{
+    "variables": {
+        "build_number": "{{timestamp}}",
+        "aws_access_key": "{{env `AWS_PERSONAL_ACCESS_KEY`}}",
+        "aws_secret_key": "{{env `AWS_PERSONAL_SECRET_KEY`}}"
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `aws_access_key`}}",
+            "ami_name": "{{user `openvpn_ami_name`}}-{{isotime | clean_resource_name}}",
+            "ami_description": "openvpn base ami",
+            "ami_regions": [
+                "{{user `aws_region`}}"
+            ],
+            "associate_public_ip_address": true,
+            "communicator": "ssh",
+            "force_deregister": "{{user `openvpn_destroy_old_ami`}}",
+            "force_delete_snapshot": "{{user `openvpn_destroy_old_ami`}}",
+            "ena_support": true,
+            "instance_type": "{{user `instance_type`}}",
+            "region": "{{user `aws_region`}}",
+            "run_tags": {
+                "Name": "packer-builder openvpn"
+            },
+            "secret_key": "{{user `aws_secret_key`}}",
+            "source_ami": "{{user `base_ami`}}",
+            "ssh_username": "{{user `ssh_user`}}",
+            "tags": {
+                "Name": "{{user `openvpn_ami_name`}}"
+            }
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "curl -O {{user `openvpn_install_script_location`}}",
+                "curl -O {{user `openvpn_update_user_script_location`}}",
+                "chmod +x openvpn-install.sh",
+                "export OPENVPN_ENDPOINT=vpn.{{user `openvpn_domain`}}",
+                "export OPENVPN_DEFAULT_USER={{user `openvpn_default_user`}}",
+                "sudo AUTO_INSTALL=y ENDPOINT=$OPENVPN_ENDPOINT ./openvpn-install.sh",
+                "sed -e '/export CLIENT=\"${ovpn_user}\"/{n;s@.*@    CLIENTNUMBER=1 .\/openvpn-install.sh@}' update_users.sh > update_users_modified.sh",
+                "chmod +x update_users_modified.sh",
+                "sudo ./update_users_modified.sh {{user `openvpn_default_users`}}",
+                "sudo mkdir {{user `openvpn_clients_dir`}} && sudo mv *.ovpn {{user `openvpn_clients_dir`}}/"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "{{user `openvpn_clients_dir`}}/",
+            "direction": "download",
+            "destination": "{{user `openvpn_local_dir`}}/"
+        }
+    ]
+}
