@@ -3,19 +3,19 @@
 # https://github.com/angristan/openvpn-install
 # https://github.com/lmammino/terraform-openvpn
 # https://github.com/terraform-community-modules/tf_aws_openvpn
-OPENVPN_INSTALL_SCRIPT		="https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh"
-OPENVPN_UPDATE_USER_SCRIPT	="https://raw.githubusercontent.com/dumrauf/openvpn-terraform-install/master/scripts/update_users.sh"
+OPENVPN_INSTALL_SCRIPT="https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh"
+OPENVPN_UPDATE_USER_SCRIPT="https://raw.githubusercontent.com/dumrauf/openvpn-terraform-install/master/scripts/update_users.sh"
 
-BASE_AMI 					=ami-0528a5175983e7f28
-CLIENTS						="laptop firestick iphone ipad"
-DESTROY_OLD_AMI				=true
-DOMAIN_ENDPOINT 			=$(DOMAIN)
-OPENVPN_LOCAL_CLIENTS_DIR	=$(LOCAL_CLIENTS_DIR)
-NAME						=openvpn-server
-OPENVPN_CLIENTS_DIR 		=/home/$(SSH_USER)/clients
-REGION 						=us-west-2
-SSH_USER 					=ec2-user
-INSTANCE_TYPE           	=t3.micro
+BASE_AMI=ami-0528a5175983e7f28
+CLIENTS="laptop firestick iphone ipad"
+DESTROY_OLD_AMI=true
+DOMAIN_ENDPOINT=$(DOMAIN)
+OPENVPN_LOCAL_CLIENTS_DIR=$(LOCAL_CLIENTS_DIR)
+NAME=openvpn-server
+OPENVPN_CLIENTS_DIR=/home/$(SSH_USER)/clients
+REGION=us-west-2
+SSH_USER=ec2-user
+INSTANCE_TYPE=t3.micro
 
 .PHONY: help
 
