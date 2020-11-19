@@ -6,7 +6,7 @@
 OPENVPN_INSTALL_SCRIPT="https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh"
 OPENVPN_UPDATE_USER_SCRIPT="https://raw.githubusercontent.com/dumrauf/openvpn-terraform-install/master/scripts/update_users.sh"
 
-BASE_AMI=ami-0528a5175983e7f28
+BASE_AMI=ami-07a0da1997b55b23e
 CLIENTS="laptop firestick iphone ipad"
 DESTROY_OLD_AMI=true
 DOMAIN_ENDPOINT=$(DOMAIN)
@@ -28,53 +28,29 @@ help:
 .DEFAULT_GOAL := help
 
 init: 
-	terraform init 
+	terraform init  
 	terraform get -update
 
 plan: init
-ifdef TARGET
-	terraform plan  -detailed-exitcode  -target $(TARGET) \
-	-var='resource_name=$(NAME)' \
-	-var='region=$(REGION)' \
-	-var='instance_type=$(INSTANCE_TYPE)' \
-	-var='domain=$(DOMAIN_ENDPOINT)'
-else
 	terraform plan -detailed-exitcode \
 	-var='resource_name=$(NAME)' \
 	-var='region=$(REGION)' \
 	-var='instance_type=$(INSTANCE_TYPE)' \
 	-var='domain=$(DOMAIN_ENDPOINT)'
-endif
 
 apply: init
-ifdef TARGET
-	terraform apply -target $(TARGET) \
-	-var='resource_name=$(NAME)' \
-	-var='region=$(REGION)' \
-	-var='instance_type=$(INSTANCE_TYPE)' \
-	-var='domain=$(DOMAIN_ENDPOINT)'
-else
 	terraform apply \
 	-var='resource_name=$(NAME)' \
 	-var='region=$(REGION)' \
 	-var='instance_type=$(INSTANCE_TYPE)' \
 	-var='domain=$(DOMAIN_ENDPOINT)'
-endif
 
 destroy: init
-ifdef TARGET
-	terraform destroy -target $(TARGET) \
-	-var='resource_name=$(NAME)' \
-	-var='region=$(REGION)' \
-	-var='instance_type=$(INSTANCE_TYPE)' \
-	-var='domain=$(DOMAIN_ENDPOINT)'
-else
 	terraform destroy \
 	-var='resource_name=$(NAME)' \
 	-var='region=$(REGION)' \
 	-var='instance_type=$(INSTANCE_TYPE)' \
 	-var='domain=$(DOMAIN_ENDPOINT)'
-endif
 
 packer_build: packer_validate 
 ifdef CLIENTS  
@@ -127,3 +103,12 @@ ami_destroy:
 	 | xargs -I {}  aws ec2 deregister-image --image-id {} 
 	
 	@echo image removed. GO CHECK!
+
+# Get latest version of default AMI, updates Makefile.
+base_ami: 
+	@BASE_AMI_ID=$$(terraform apply -no-color -target=module.base_ami -auto-approve \
+	-var='resource_name=$(NAME)' \
+	-var='region=$(REGION)' \
+	-var='instance_type=$(INSTANCE_TYPE)' \
+	-var='domain=$(DOMAIN_ENDPOINT)' | grep base_ami_id | awk '{print $$3}');\
+	echo $$BASE_AMI_ID | xargs -I {} sed -i '' 's/^BASE_AMI=.*/BASE_AMI={}/' Makefile 

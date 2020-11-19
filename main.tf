@@ -23,3 +23,7 @@ module "openvpn_server" {
   vpc_name                         = var.vpc_name
 
 }
+
+module "base_ami" {
+  source = "./modules/base-ami"
+}
