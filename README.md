@@ -15,6 +15,13 @@ make build_server
 
 ```
 
+### Generate Default AMI
+```
+make base_ami
+```
+
+
+
 Run `make help` or `make` for all other options
 
 
