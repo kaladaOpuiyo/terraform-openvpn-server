@@ -106,6 +106,7 @@ ami_destroy:
 
 # Get latest version of default AMI, updates Makefile.
 base_ami: 
+	terraform init
 	@BASE_AMI_ID=$$(terraform apply -no-color -target=module.base_ami -auto-approve \
 	-var='resource_name=$(NAME)' \
 	-var='region=$(REGION)' \
